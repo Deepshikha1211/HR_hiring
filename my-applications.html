@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkWise - My Applications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --text-secondary: #777;
+            --border-color: #e0e0e0;
+            --hover-color: #e8f0fe;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            padding: 20px;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 180px;
+            margin-right: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: #ecf0f1;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--primary-color);
+        }
+
+        .logout-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-button i {
+            margin-right: 10px;
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin-left: 250px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            color: var(--secondary-color);
+        }
+
+        .filter-dropdown {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+        }
+
+        .applications-list {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .application-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .application-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .application-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .application-card p {
+            margin-bottom: 5px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status.under-review {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+
+        .status.interviewed {
+            background-color: #81ecec;
+            color: #00b894;
+        }
+
+        .status.rejected {
+            background-color: #fab1a0;
+            color: #d63031;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .card-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .view-details {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .view-details:hover {
+            background-color: #2980b9;
+        }
+
+        .withdraw {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .withdraw:hover {
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .logo img, .nav-item span, .logout-button span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .applications-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png" alt="WorkWise Logo">
+                </div>
+                <nav>
+                    <a href="index.html" class="nav-item"><i class="fas fa-briefcase"></i> <span>Job Vacancies</span></a>
+                    <a href="my-applications.html" class="nav-item active"><i class="fas fa-file-alt"></i> <span>My Applications</span></a>
+                    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i> <span>Profile</span></a>
+                    <a href="saved-jobs.html" class="nav-item"><i class="fas fa-heart"></i> <span>Saved Jobs</span></a>
+                    <a href="notifications.html" class="nav-item"><i class="fas fa-bell"></i> <span>Notifications</span></a>
+                    <a href="job-market-insights.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Job Market Insights</span></a>
+                    
+                </nav>
+            </div>
+            <button class="logout-button" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>My Applications</h1>
+                <select class="filter-dropdown" id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="under-review">Under Review</option>
+                    <option value="interviewed">Interviewed</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div id="applicationsList" class="applications-list">
+                <!-- Applications will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+    <script>
+        // Sample applications data
+        const applications = [
+            { id: 1, jobTitle: "Senior Software Engineer", company: "Tech Co", status: "Under Review", appliedDate: "2023-05-15" },
+            { id: 2, jobTitle: "Product Manager", company: "Innovate Inc", status: "Interviewed", appliedDate: "2023-05-10" },
+            { id: 3, jobTitle: "UX Designer", company: "Design Studio", status: "Rejected", appliedDate: "2023-05-05" },
+            { id: 4, jobTitle: "Data Scientist", company: "AI Solutions", status: "Under Review", appliedDate: "2023-05-18" },
+            { id: 5, jobTitle: "Marketing Specialist", company: "Brand Builders", status: "Interviewed", appliedDate: "2023-05-12" }
+        ];
+
+        function displayApplications(filter = 'all') {
+            const applicationsList = document.getElementById('applicationsList');
+            applicationsList.innerHTML = '';
+
+            applications.forEach(app => {
+                if (filter === 'all' || app.status.toLowerCase().replace(' ', '-') === filter) {
+                    const appCard = document.createElement('div');
+                    appCard.className = 'application-card';
+                    appCard.innerHTML = `
+                        <h3>${app.jobTitle}</h3>
+                        <p><strong>Company:</strong> ${app.company}</p>
+                        <p><strong>Status:</strong> <span class="status ${app.status.toLowerCase().replace(' ', '-')}">${app.status}</span></p>
+                        <p><strong>Applied on:</strong> ${app.appliedDate}</p>
+                        <div class="card-actions">
+                            <button class="view-details" onclick="viewDetails(${app.id})">View Details</button>
+                            <button class="withdraw" onclick="withdrawApplication(${app.id})">Withdraw</button>
+                        </div>
+                    `;
+                    applicationsList.appendChild(appCard);
+                }
+            });
+        }
+
+        function viewDetails(id) {
+            alert(`Viewing details for application ${id}`);
+            // Implement view details functionality
+        }
+
+        function withdrawApplication(id) {
+            if (confirm(`Are you sure you want to withdraw application ${id}?`)) {
+                // Implement withdraw functionality
+                alert(`Application ${id} withdrawn`);
+            }
+        }
+
+        function logout() {
+          window.location.href = 'index.html'; // Redirect to the signup page
+        }
+
+
+        // Initial display
+        displayApplications();
+
+        // Filter functionality
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            displayApplications(this.value);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Native - Job Vacancies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .btn:hover {
+            background-color: #333;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .vacancy-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            padding: 20px;
+            transition: transform var(--transition-speed) ease;
+            cursor: pointer;
+        }
+
+        .vacancy-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .vacancy-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .vacancy-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .vacancy-info img {
+            width: 16px;
+            margin-right: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: var(--card-background);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: var(--text-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .applicant-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .applicant-card {
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .applicant-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .applicant-info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        .applicant-skills {
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div>
+                <div class="logo">
+                    <img src="https://i.postimg.cc/qqLRVPRj/workwise-high-resolution-logo-black-transparent.png"
+                        alt="WorkWise Logo">
+                </div>
+                <nav>
+                    <a href="hr_profile.html" class="nav-item">Dashboard</a>
+                    <a href="department.html" class="nav-item">Departments</a>
+                    <a href="comp_chart.html" class="nav-item">Org Chart</a>
+                    <a href="vacancies.html" class="nav-item">Job Vacancies</a>
+                    <a href="campus-drive.html" class="nav-item active">Campus Drive</a>
+                </nav>
+            </div>
+            <button class="logout-button" onclick="logout()">Logout</button>
+        </aside>
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Job Vacancies</h2>
+                <button class="btn" onclick="addVacancy()">+ Add New Vacancy</button>
+            </div>
+            <hr>
+            <div class="grid" id="vacanciesList">
+                <!-- Vacancies will be dynamically added here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for displaying applicants -->
+    <div id="applicantsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="applicantsList" class="applicant-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const vacancies = [
+            {
+                title: "Senior Software Engineer",
+                department: "Engineering",
+                location: "San Francisco, CA",
+                applicants: [
+                    {
+                        name: "John Doe",
+                        age: 32,
+                        education: "M.S. in Computer Science",
+                        experience: "8 years",
+                        currentCompany: "Tech Innovators Inc.",
+                        skills: ["Java", "Python", "AWS", "Microservices"]
+                    },
+                    {
+                        name: "Jane Smith",
+                        age: 29,
+                        education: "B.S. in Software Engineering",
+                        experience: "6 years",
+                        currentCompany: "DataDrive Solutions",
+                        skills: ["JavaScript", "React", "Node.js", "MongoDB"]
+                    },
+                    {
+                        name: "Mike Johnson",
+                        age: 35,
+                        education: "Ph.D. in Computer Science",
+                        experience: "10 years",
+                        currentCompany: "AI Frontiers",
+                        skills: ["C++", "Machine Learning", "Distributed Systems"]
+                    }
+                ]
+            },
+            {
+                title: "Product Manager",
+                department: "Product",
+                location: "New York, NY",
+                applicants: [
+                    {
+                        name: "Anna Lee",
+                        age: 30,
+                        education: "MBA",
+                        experience: "7 years",
+                        currentCompany: "InnovateTech",
+                        skills: ["Product Strategy", "Market Research", "Agile"]
+                    },
+                    {
+                        name: "James Brown",
+                        age: 34,
+                        education: "B.A. in Business Administration",
+                        experience: "9 years",
+                        currentCompany: "GrowthHub",
+                        skills: ["Roadmapping", "Stakeholder Management", "User Experience"]
+                    }
+                ]
+            }
+        ];
+
+        function addVacancy() {
+            // Add new vacancy logic
+        }
+
+        function logout() {
+            // Logout logic
+            window.location.href = 'index.html';
+        }
+
+        const vacanciesList = document.getElementById('vacanciesList');
+
+        vacancies.forEach(vacancy => {
+            const card = document.createElement('div');
+            card.classList.add('vacancy-card');
+            card.innerHTML = `
+                <h3>${vacancy.title}</h3>
+                <div class="vacancy-info">
+                    <img src="https://i.postimg.cc/8cdj0F9L/department-icon.png" alt="Department Icon">
+                    <span>${vacancy.department}</span>
+                </div>
+                <div class="vacancy-info">
+                    <img src="https://i.postimg.cc/zDs3KP1B/location-icon.png" alt="Location Icon">
+                    <span>${vacancy.location}</span>
+                </div>
+                <button class="btn" onclick="showApplicants('${vacancy.title}')">View Applicants</button>
+            `;
+            vacanciesList.appendChild(card);
+        });
+
+        function showApplicants(vacancyTitle) {
+            const modal = document.getElementById('applicantsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const applicantsList = document.getElementById('applicantsList');
+            const vacancy = vacancies.find(v => v.title === vacancyTitle);
+
+            modalTitle.textContent = `Applicants for ${vacancyTitle}`;
+            applicantsList.innerHTML = '';
+
+            vacancy.applicants.forEach(applicant => {
+                const applicantCard = document.createElement('div');
+                applicantCard.classList.add('applicant-card');
+                applicantCard.innerHTML = `
+                    <div class="applicant-name">${applicant.name}</div>
+                    <div class="applicant-info">Age: ${applicant.age}</div>
+                    <div class="applicant-info">Education: ${applicant.education}</div>
+                    <div class="applicant-info">Experience: ${applicant.experience}</div>
+                    <div class="applicant-info">Current Company: ${applicant.currentCompany}</div>
+                    <div class="applicant-skills">
+                        ${applicant.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                `;
+                applicantsList.appendChild(applicantCard);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        const closeModal = document.querySelector('.close');
+        closeModal.addEventListener('click', () => {
+            document.getElementById('applicantsModal').style.display = 'none';
+        });
+
+        window.onclick = function (event) {
+            if (event.target === document.getElementById('applicantsModal')) {
+                document.getElementById('applicantsModal').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
